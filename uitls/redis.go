@@ -1,7 +1,6 @@
 package uitls
 
 import (
-	"fmt"
 	"github.com/go-redis/redis"
 	"redis-admin-server/model"
 	"strconv"
@@ -35,6 +34,8 @@ func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo) (err error
 	var dbKeysArray []int
 	infoArray := strings.Split(strings.Trim(info, "\n"), "\n")
 	for _ ,v := range infoArray {
+		// 统一个里面的所有元素都 除去 \r 字符
+		v = strings.Trim(v, "\r")
 		if strings.HasPrefix(v, "uptime_in_seconds") {
 			redisNodeInfo.UptimeInSeconds = strings.Split(v, ":")[1]
 		}
@@ -54,7 +55,7 @@ func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo) (err error
 			redisNodeInfo.TotalSystemMemoryHuman = strings.Split(v, ":")[1]
 		}
 		if strings.HasPrefix(v, "role") {
-			redisNodeInfo.NodeRole = strings.Trim(strings.Split(v, ":")[1], "\r")
+			redisNodeInfo.NodeRole = strings.Split(v, ":")[1]
 		}
 		if strings.HasPrefix(v, "db") {
 			dbKeys, _ :=strconv.Atoi(strings.Split(strings.Split(strings.Split(v, ":")[1], ",")[0], "=")[1])
@@ -64,11 +65,11 @@ func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo) (err error
 		redisNodeInfo.TotalKeys = Sum(dbKeysArray)
 		redisNodeInfo.DBSize = len(dbKeysArray)
 	}
-	fmt.Println("----------------",redisNodeInfo.NodeRole)
-	fmt.Println("----------------",redisNodeInfo.TotalSystemMemoryHuman)
-	fmt.Println("----------------",redisNodeInfo.UsedMemoryHuman)
-	fmt.Println("----------------",redisNodeInfo.OS)
-	fmt.Println("----------------",redisNodeInfo.TotalKeys)
-	fmt.Println("----------------",redisNodeInfo.DBSize)
+	//fmt.Println("----------------",redisNodeInfo.NodeRole)
+	//fmt.Println("----------------",redisNodeInfo.TotalSystemMemoryHuman)
+	//fmt.Println("----------------",redisNodeInfo.UsedMemoryHuman)
+	//fmt.Println("----------------",redisNodeInfo.OS)
+	//fmt.Println("----------------",redisNodeInfo.TotalKeys)
+	//fmt.Println("----------------",redisNodeInfo.DBSize)
 	return  err
 }

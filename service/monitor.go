@@ -6,6 +6,7 @@ import (
 	"redis-admin-server/global"
 	"redis-admin-server/model"
 	"redis-admin-server/uitls"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -29,7 +30,7 @@ func RedisMonitor() {
 	<-ch
 }
 
-
+// 定时采集数据的 函数
 func getRedisInfo() {
 	var redisClusterList []model.RedisCluster
 	err := global.DB.Model(&model.RedisCluster{}).Find(&redisClusterList).Error
@@ -94,5 +95,32 @@ func getRedisInfo() {
 		}
 
 	}
+
+}
+
+// 接口函数
+func GetInfoItemMonitorData(queryInfo model.RedisMonitorQueryParams) (err error, resultList []interface{}) {
+
+	for _, node := range queryInfo.NodeList {
+		log.Printf("查询节点: %s 的信息", node)
+		db := global.DB.Model(&model.RedisMonitorInfo{})
+
+		startTime, _ := strconv.ParseInt(queryInfo.StartTime, 10 ,64)
+		endTime, _ := strconv.ParseInt(queryInfo.EndTime, 10 ,64)
+		db = db.Debug().Where("updated_at > ? and updated_at < ? and cluster_id = ?",
+			time.Unix(startTime,0).Format("2006-01-02 15:04:05"),
+			time.Unix(endTime,0).Format("2006-01-02 15:04:05"), queryInfo.ClusterID)
+		var nodeMonitorData []model.RedisMonitorInfo
+		err := db.Where("node = ? ", node).Find(&nodeMonitorData).Error
+		if err != nil {
+			log.Println("数据库查询失败,", err.Error())
+		}
+		resultList = append(resultList, nodeMonitorData)
+	}
+
+	return  err, resultList
+
+
+
 
 }
