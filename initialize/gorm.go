@@ -1,11 +1,10 @@
 package initialize
 
 import (
-	"redis-admin-server/model"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-
+	"redis-admin-server/model"
 )
 
 // Gorm 初始化数据库并产生数据库全局变量
