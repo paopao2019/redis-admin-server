@@ -11,7 +11,7 @@ import (
 // Gorm 初始化数据库并产生数据库全局变量
 func Gorm() *gorm.DB {
 	// 数据库mysql
-	dsn := "root:p@ss1234@anji@tcp(10.108.26.60:3307)/redis_admin_server_db?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "admin:admin@Password@tcp(10.108.26.60:3307)/redis_admin_server_db?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
