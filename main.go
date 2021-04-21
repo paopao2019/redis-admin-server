@@ -27,6 +27,8 @@ func main() {
 
 	// 监控数据路由
 	r.POST("/monitor/getInfoItemMonitorData", api.GetInfoItemMonitorData)
+	// 接受命令操作
+	r.POST("/command/sendCommand", api.SendCommand)
 
 	//定时监控任务
 	go service.RedisMonitor()

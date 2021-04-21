@@ -49,6 +49,7 @@ func getRedisInfo() {
 			log.Printf("监控节点: %s", node)
 			// 1. 定义数据模型
 			var redisNodeInfo = new(model.RedisNodeInfo)
+			var redisNodeOtherInfo = new(model.RedisNodeOtherInfo)
 			var redisMonitorInfo  model.RedisMonitorInfo
 			var redisNode = new(model.RedisNode)
 			// base信息赋值
@@ -65,9 +66,10 @@ func getRedisInfo() {
 
 			if redisMonitorInfo.LinkState == "health" {
 				// 3. 格式化数据成节点信息需要的
-				err = uitls.FormatRedisInfo(info, redisNodeInfo)
+				err = uitls.FormatRedisInfo(info, redisNodeInfo, redisNodeOtherInfo)
 				// 赋值采集的监控信息
 				redisMonitorInfo.RedisNodeInfo = redisNodeInfo
+				redisMonitorInfo.RedisNodeOtherInfo = redisNodeOtherInfo
 				redisClusterInfo.RedisNodeInfo = redisNodeInfo
 			}
 

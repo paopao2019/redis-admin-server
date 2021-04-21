@@ -30,16 +30,25 @@ type RedisNodeInfo struct {
 	RedisVersion string `json:"redis_version" gorm:"column:redis_version;type:varchar(50);comment:版本"`
 	RedisMode string `json:"redis_mode" gorm:"column:redis_mode;type:varchar(50);comment:模式"`
 	OS string `json:"os" gorm:"column:os;type:varchar(50);comment:操作系统"`
-	UptimeInSeconds string `json: uptime_in_seconds gorm: "column: uptime_in_seconds";type:varchar(50)`
-	TotalSystemMemoryHuman string  `json: total_system_memory_human gorm: "column: total_system_memory_human";type:varchar(50)`
-	UsedMemoryHuman string `json: used_memory_human gorm: "column: used_memory_human";type:varchar(50)`
-	DBSize int  `json: db_size gorm: "column: db_size";type:int(8)`
+	UptimeInSeconds string `json:"uptime_in_seconds" gorm:"column:uptime_in_seconds;type:varchar(50)"`
+	TotalSystemMemoryHuman string  `json:"total_system_memory_human" gorm:"column:total_system_memory_human;type:varchar(50)"`
+	UsedMemory string `json:"used_memory" gorm:"column:used_memory;type:varchar(50)"`
+	DBSize int  `json:"db_size" gorm:"column:db_size;type:int(8)"`
 	NodeRole    string `json:"node_role" gorm:"column:node_role;type:varchar(50);comment:节点角色"`
-	TotalKeys int `json: total_keys gorm: "column: total_keys";type:int(8)`
+	TotalKeys int `json:"total_keys" gorm:"column:total_keys;type:int(8)"`
 }
 
+
+// 需要监控的其他信息
 type RedisNodeOtherInfo struct {
-	// 需要监控的其他信息
+	UsedMemoryPeak string `json:"used_memory_peak" gorm:"column:used_memory_peak;type:varchar(50)"`
+	UsedMemoryRss string `json:"used_memory_rss" gorm:"column:used_memory_rss;type:varchar(50)"`
+	ConnectedClients string `json:"connected_clients" gorm:"column:connected_clients;type:varchar(50)"`
+	BlockedClients string `json:"blocked_clients" gorm:"column:blocked_clients;type:varchar(50)"`
+	ExpiredKeys string `json:"expired_keys" gorm:"column:expired_keys;type:varchar(50)"`
+	TotalCommandsProcessed string `json:"total_commands_processed" gorm:"column:total_commands_processed;type:varchar(50)"`
+	KeySpaceHits string `json:"keyspace_hits" gorm:"column:keyspace_hits;type:varchar(50)"`
+	KeySpaceMisses string `json:"keyspace_misses" gorm:"column:keyspace_misses;type:varchar(50)"`
 }
 
 type RedisNode struct {
@@ -48,7 +57,7 @@ type RedisNode struct {
 	Node    string `json:"node" gorm:"column:node;type:varchar(50);comment:节点"`
 	LinkState string `json:"link_state" gorm:"column:link_state;type:varchar(50);comment:redis状态"`
 	*RedisNodeInfo  // 能连接 LinkState是好的 才有用
-	RedisCluster  RedisCluster `json:"redis_cluster" gorm:"foreignKey:cluster_id;references:id"`
+	RedisCluster  RedisCluster `json:"-" gorm:"foreignKey:cluster_id;references:id"`
 
 }
 

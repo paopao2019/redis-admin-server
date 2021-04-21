@@ -29,6 +29,7 @@ func AddRedisCluster(redisCluster model.RedisCluster) (err error) {
 		// 获取节点信息
 		fmt.Println(redisNodeAddr)
 		var redisNodeInfo = new(model.RedisNodeInfo)
+		var redisNodeOtherInfo = new(model.RedisNodeOtherInfo)
 		var redisNode model.RedisNode
 		redisNode.RedisNodeInfo = redisNodeInfo
 		redisNode.Node = redisNodeAddr
@@ -44,7 +45,7 @@ func AddRedisCluster(redisCluster model.RedisCluster) (err error) {
 
 		if redisNode.LinkState == "health" {
 			// 2. 格式化数据成节点信息需要的
-			err = uitls.FormatRedisInfo(info, redisNodeInfo)
+			err = uitls.FormatRedisInfo(info, redisNodeInfo, redisNodeOtherInfo)
 			fmt.Printf("redis节点测试: %s\n", redisNodeInfo.NodeRole)
 			redisNode.RedisNodeInfo = redisNodeInfo
 		}

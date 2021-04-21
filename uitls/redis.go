@@ -22,6 +22,7 @@ func GetRedisInfo(node string, password string ) (err error, info string) {
 		return err, info
 	}
 
+
 	info, err =  rdb.Info().Result()
 	//fmt.Println("-------", info)
 	return nil, info
@@ -30,7 +31,7 @@ func GetRedisInfo(node string, password string ) (err error, info string) {
 
 
 
-func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo) (err error) {
+func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo, redisNodeOtherInfo *model.RedisNodeOtherInfo) (err error) {
 	var dbKeysArray []int
 	infoArray := strings.Split(strings.Trim(info, "\n"), "\n")
 	for _ ,v := range infoArray {
@@ -48,8 +49,8 @@ func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo) (err error
 		if strings.HasPrefix(v, "os") {
 			redisNodeInfo.OS = strings.Split(v, ":")[1]
 		}
-		if strings.HasPrefix(v, "used_memory_human") {
-			redisNodeInfo.UsedMemoryHuman = strings.Split(v, ":")[1]
+		if strings.HasPrefix(v, "used_memory:") {
+			redisNodeInfo.UsedMemory = strings.Split(v, ":")[1]
 		}
 		if strings.HasPrefix(v, "total_system_memory_human") {
 			redisNodeInfo.TotalSystemMemoryHuman = strings.Split(v, ":")[1]
@@ -64,6 +65,33 @@ func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo) (err error
 		// 所有db 中的 keys总数求和
 		redisNodeInfo.TotalKeys = Sum(dbKeysArray)
 		redisNodeInfo.DBSize = len(dbKeysArray)
+
+
+		// redisNodeOtherInfo 信息
+		if strings.HasPrefix(v, "used_memory_peak:") {
+			redisNodeOtherInfo.UsedMemoryPeak = strings.Split(v, ":")[1]
+		}
+		if strings.HasPrefix(v, "used_memory_rss:") {
+			redisNodeOtherInfo.UsedMemoryRss = strings.Split(v, ":")[1]
+		}
+		if strings.HasPrefix(v, "connected_clients") {
+			redisNodeOtherInfo.ConnectedClients = strings.Split(v, ":")[1]
+		}
+		if strings.HasPrefix(v, "blocked_clients") {
+			redisNodeOtherInfo.BlockedClients = strings.Split(v, ":")[1]
+		}
+		if strings.HasPrefix(v, "expired_keys") {
+			redisNodeOtherInfo.ExpiredKeys = strings.Split(v, ":")[1]
+		}
+		if strings.HasPrefix(v, "total_commands_processed") {
+			redisNodeOtherInfo.TotalCommandsProcessed = strings.Split(v, ":")[1]
+		}
+		if strings.HasPrefix(v, "keyspace_hits") {
+			redisNodeOtherInfo.KeySpaceHits = strings.Split(v, ":")[1]
+		}
+		if strings.HasPrefix(v, "keyspace_misses") {
+			redisNodeOtherInfo.KeySpaceMisses = strings.Split(v, ":")[1]
+		}
 	}
 	//fmt.Println("----------------",redisNodeInfo.NodeRole)
 	//fmt.Println("----------------",redisNodeInfo.TotalSystemMemoryHuman)

@@ -20,6 +20,8 @@ func GetInfoItemMonitorData(c *gin.Context)  {
 		log.Println("数据库查询失败", err.Error())
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"msg": "获取成功",
 		"data": list,
 	})
 }
