@@ -33,7 +33,6 @@ func main() {
 	//定时监控任务
 	go service.RedisMonitor()
 
-
 	r.Run(":9996")
 
 
