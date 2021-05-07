@@ -101,3 +101,17 @@ func FormatRedisInfo(info string, redisNodeInfo *model.RedisNodeInfo, redisNodeO
 	//fmt.Println("----------------",redisNodeInfo.DBSize)
 	return  err
 }
+
+func GetDBList(rdb *redis.Client) (dbList []map[string]interface{}, err error) {
+	dbInfo, err := rdb.Info("Keyspace").Result()
+	infoArray := strings.Split(strings.Trim(dbInfo, "\n"), "\n")
+	for _,dbLine := range infoArray {
+		if strings.HasPrefix(dbLine, "db") {
+			dbList = append(dbList, map[string]interface{} {
+				"database": strings.Split(dbLine, ":")[0],
+				"keys": strings.Split(strings.Split(strings.Split(dbLine, ":")[1], ",")[0], "=")[1],
+			})
+		}
+	}
+	return dbList, err
+}
